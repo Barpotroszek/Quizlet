@@ -1,0 +1,113 @@
+@media (min-width: 650px) {
+    body {
+        display: grid;
+        grid-template-columns: 1fr 1.3fr;
+        align-content: center;
+        height: 80vh;
+    }
+
+    body>div {
+        margin: 5em 0;
+        ;
+    }
+
+    #card {
+        width: 50% !important;
+    }
+}
+
+body {
+    background-color: black;
+    color: white;
+}
+
+body>div {
+    margin: 2em 0;
+    ;
+}
+
+h2 {
+    text-decoration: underline !important;
+    text-align: center;
+}
+
+h3 {
+    margin: 0;
+    padding: 0;
+    font-size: x-large;
+    height: fit-content;
+}
+
+.hidden {
+    visibility: hidden !important;
+}
+
+
+.all {
+    --status-color: #d69e24;
+    /* --progress: 50%; */
+}
+
+.correct {
+    --status-color: rgb(0, 255, 0);
+    /* --progress: 50%; */
+}
+
+.wrong {
+    --status-color: red;
+    /* --progress: 30%; */
+}
+
+#status-wrapper {
+    padding: 0 2em;
+}
+
+#status-wrapper .status {
+    margin: .5em 0;
+}
+
+#result {
+    color: var(--status-color);
+}
+
+#card {
+    background-color: #717ec94f;
+    display: grid;
+    margin: 0 auto;
+    border: .1em solid red;
+    gap: 1em;
+    justify-content: center;
+    width: max-content;
+    padding: 2em;
+    justify-self: center;
+}
+
+#card input,
+#card button,
+#card span {
+    /* font-family: monospace; */
+    font-size: 1em;
+}
+
+.status > span::after{
+    content: attr(data-amount);
+}
+
+.bar {
+    display: block;
+    position: relative;
+    width: 100%;
+    /* filter: brightness(50%); */
+    background-color: var(--status-color);
+    height: 1em;
+}
+
+
+.bar>.level {
+    display: block;
+    float: right;
+    background-color: var(--status-color);
+    filter: brightness(40%);
+    width: calc(100% - var(--progress));
+    height: inherit;
+}
