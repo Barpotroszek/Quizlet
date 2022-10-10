@@ -10,7 +10,7 @@ class WordList {
   all_words;
   constructor(list) {
     this.passed_wrong_before = false;
-    this.all_words = list.splice(0,10);
+    this.all_words = list;
     this.correct = [];
     this.wrong = [];
     this.current_id = 0;
