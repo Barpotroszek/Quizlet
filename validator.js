@@ -19,10 +19,11 @@ class WordList {
   }
 
   setRandomWord() {
-    this.current_word =
-      this.all_words[Math.floor(Math.random() * this.all_words.length)];
-    // console.log(this.current_word)
-  }
+    // console.log("Randomming", this.all_words)
+    this.current_word = this.all_words[Math.floor(Math.random() * this.all_words.length)];
+    // console.log("choosen word:", word);
+    this.current_word=word;
+    }
 
   setNextWord = () => this.setRandomWord();
 
@@ -92,12 +93,15 @@ class WordList {
   }
 
   #getWord(anwser) {
+    if(this.current_word === null || this.current_word === undefined) {
+      this.setRandomWord();
+      console.log("WORLD WAS UNDEFINED")
+    }
     if (anwser == this.english_answer) return this.current_word.eng;
     return this.current_word.pl;
   }
 
   getCurrentWord(anwser) {
-    if(this.current_word === null) this.setRandomWord();
     return this.#getWord(anwser);
   }
 }
@@ -154,13 +158,13 @@ function updateProgressBars() {
 }
 
 function setWord() {
-  if (wordList.current_pos > wordList.amount_all_words) {
+  if (wordList.all_words.length ===  0 || wordList.current_pos === wordList.amount_all_words) {
     let anwser = confirm(
       "Czy chcesz powtórzyć słówka, które były źle rozwiązane? Jeśli nie, powtórzysz ten sam zakres materiału."
     );
     if (anwser){
       wordList = new WordList(
-        wordList.wrong.map((id) => wordList.all_words[id])
+        wordList.wrong
       );
     }
     else {
@@ -168,9 +172,10 @@ function setWord() {
       wordList.wrong = [];
     }
   }
-  p_word.innerText = wordList.getCurrentWord();
+  if(wordList.current_word === undefined) wordList.setRandomWord();
   p_input.value = "";
   result.className = "hidden";
+  p_word.innerText = wordList.getCurrentWord();
   updateProgressBars();
   console.log(wordList.getCurrentWord());
 }
