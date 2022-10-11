@@ -22,7 +22,7 @@ class WordList {
     // console.log("Randomming", this.all_words)
     this.current_word = this.all_words[Math.floor(Math.random() * this.all_words.length)];
     // console.log("choosen word:", word);
-    this.current_word=word;
+    // this.current_word=word;
     }
 
   setNextWord = () => this.setRandomWord();
@@ -206,6 +206,6 @@ function saveProgress(){
 }
 
 function loadProgress(){
-  if(wordList.loadCheckpoint());
+  if(wordList.loadCheckpoint())
     setWord();
 }
