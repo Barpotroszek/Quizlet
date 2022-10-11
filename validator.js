@@ -33,7 +33,8 @@ class WordList {
 
     //Gdy zła odp
     if (text !== correct_anwser) {
-      this.wrong.push(this.current_id);
+      if(!this.passed_wrong_before) 
+        this.wrong.push(this.current_id);
       updateProgressBars();
       this.passed_wrong_before = true;
       return false;
