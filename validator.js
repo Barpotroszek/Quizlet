@@ -110,13 +110,13 @@ function validateAnswer(d) {
   d = d ? d : p_input.value;
   if (d == "") return;
   console.log({ d });
+  result.innerText = wordList.getCurrentWord(true);
   if (!wordList.validateWord(d)) {
     result.className = "wrong";
-    result.innerText = wordList.getCurrentWord(true);
     p_input.value = "";
     return false;
   }
-  result.innerText = "Dobra odpowiedź!";
+  // result.innerText = "Dobra odpowiedź!";
   result.className = "correct";
   console.log("Proper translation");
 }
@@ -159,6 +159,8 @@ function updateProgressBars() {
 
 function setWord() {
   if (wordList.all_words.length ===  0 || wordList.current_pos === wordList.amount_all_words) {
+    if(wordList.wrong.length <= 0)
+      return alert("Brawo, ukończyłeś materiał. Jeśli chcesz powtóryć wszystko od nowa, odśwież stronę.");
     let anwser = confirm(
       "Czy chcesz powtórzyć słówka, które były źle rozwiązane? Jeśli nie, powtórzysz ten sam zakres materiału."
     );
@@ -168,6 +170,7 @@ function setWord() {
       );
     }
     else {
+      wordList.all_words = [wordList.correct, wordList.wrong].flat();
       wordList.correct = [];
       wordList.wrong = [];
     }
