@@ -20,7 +20,7 @@ class WordList {
 
   setRandomWord() {
     this.current_word =
-      this.all_words[Math.floor(Math.random() * this.amount_all_words)];
+      this.all_words[Math.floor(Math.random() * this.all_words.length)];
     // console.log(this.current_word)
   }
 
