@@ -9,16 +9,58 @@ p_input.addEventListener("keypress", (ev) => {
 class WordList {
   all_words;
   constructor(list) {
-    this.passed_wrong_before = false;
     this.all_words = list;
     this.correct = [];
     this.wrong = [];
-    this.current_id = 0;
+    this.current_word = null;
+    this.passed_wrong_before = false;
+    this.amount_all_words = list.length;
     this.english_answer = true;
   }
 
+  setRandomWord() {
+    this.current_word =
+      this.all_words[Math.floor(Math.random() * this.amount_all_words)];
+    // console.log(this.current_word)
+  }
+
+  setNextWord = () => this.setRandomWord();
+
+  createCheckpoint() {
+    const data = {
+      all_words: this.all_words,
+      correct: this.correct,
+      wrong: this.wrong,
+      current_word: this.current_word,
+      // current_pos: this.current_pos,
+      amount_all_words: this.amount_all_words,
+      english_answer: this.english_answer,
+      time: new Date().getTime(),
+    };
+    localStorage.setItem("progress_data", JSON.stringify(data));
+  }
+
+  loadCheckpoint() {
+    const data = JSON.parse(localStorage.getItem("progress_data"));
+    const time = new Date(data.time);
+    let msg = `Ostatni zapis: ${time.toLocaleTimeString()} ${time.toLocaleDateString()}\nWgrać?`;
+    if (!confirm(msg)) return false;
+    this.correct = data.correct;
+    this.wrong = data.wrong;
+    this.english_answer = data.english_answer;
+    this.all_words = data.all_words;
+    this.current_word = data.current_word;
+    // this.current_pos = data.current_pos;
+    this.amount_all_words = data.amount_all_words;
+    this.english_answer = data.english_answer;
+
+    console.log(data);
+    console.log(this);
+    return true;
+  }
+
   #validateID() {
-    return !(this.current_id >= 0 && this.current_id < this.all_words.length);
+    return 0 > this.all_words.length;
   }
 
   validateWord(text) {
@@ -27,34 +69,36 @@ class WordList {
       return;
     }
 
-    let correct_anwser =
-      this.all_words[this.current_id][this.english_answer ? "eng" : "pl"];
+    let correct_anwser = this.current_word[this.english_answer ? "eng" : "pl"];
     console.log({ text, correct_anwser });
 
     //Gdy zła odp
     if (text !== correct_anwser) {
-      if(!this.passed_wrong_before) 
-        this.wrong.push(this.current_id);
+      if (!this.passed_wrong_before) this.wrong.push(this.current_word);
       updateProgressBars();
       this.passed_wrong_before = true;
       return false;
     }
 
     //gdy dobra odp
-    if (!this.passed_wrong_before) this.correct.push(this.current_id);
+    if (!this.passed_wrong_before) this.correct.push(this.current_word);
     this.passed_wrong_before = false;
-
-    setTimeout(() => setWord(this.current_id + 1), 3 * 1000);
+    this.all_words = this.all_words.filter((v) => v != this.current_word);
+    console.log(this.all_words.length);
+    this.setRandomWord();
+    this.current_pos++;
+    setTimeout(() => setWord(), 3 * 1000);
     return true;
   }
 
-  getWord(id, anwser) {
-    if (anwser == this.english_answer) return this.all_words[id].eng;
-    return this.all_words[id].pl;
+  #getWord(anwser) {
+    if (anwser == this.english_answer) return this.current_word.eng;
+    return this.current_word.pl;
   }
 
   getCurrentWord(anwser) {
-    return this.getWord(this.current_id, anwser);
+    if(this.current_word === null) this.setRandomWord();
+    return this.#getWord(anwser);
   }
 }
 
@@ -77,11 +121,11 @@ var wordList,
   handler = {};
 
 function updateProgressBars() {
-  let all = wordList.all_words.length;
+  let all = wordList.amount_all_words;
   let master = document.querySelector("#status-wrapper > div");
   master
     .querySelector(".all span")
-    .setAttribute("data-amount", `: ${wordList.current_id}/${all}`);
+    .setAttribute("data-amount", `: ${all - wordList.all_words.length}/${all}`);
   master
     .querySelector(".correct span")
     .setAttribute("data-amount", `: ${wordList.correct.length}/${all}`);
@@ -93,7 +137,7 @@ function updateProgressBars() {
     .querySelector(".all .level")
     .style.setProperty(
       "--progress",
-      `${Math.round((100 * wordList.current_id) / all)}%`
+      `${Math.round((100 * (all - wordList.all_words.length)) / all)}%`
     );
   master
     .querySelector(".correct .level")
@@ -105,21 +149,21 @@ function updateProgressBars() {
     .querySelector(".wrong .level")
     .style.setProperty(
       "--progress",
-      `${Math.round(
-        (100 * wordList.wrong.length) / wordList.all_words.length
-      )}%`
+      `${Math.round((100 * wordList.wrong.length) / all)}%`
     );
 }
 
-function setWord(id) {
-  wordList.current_id = id || wordList.current_id;
-  if (wordList.current_id >= wordList.all_words.length) {
+function setWord() {
+  if (wordList.current_pos > wordList.amount_all_words) {
     let anwser = confirm(
       "Czy chcesz powtórzyć słówka, które były źle rozwiązane? Jeśli nie, powtórzysz ten sam zakres materiału."
     );
-    if (anwser) wordList = new WordList(wordList.wrong.map((id)=>wordList.all_words[id]));
+    if (anwser){
+      wordList = new WordList(
+        wordList.wrong.map((id) => wordList.all_words[id])
+      );
+    }
     else {
-      wordList.current_id = 0;
       wordList.correct = [];
       wordList.wrong = [];
     }
@@ -146,6 +190,17 @@ if (localStorage.getItem("key") == null) {
 }
 
 function init() {
-  setWord(0);
+  setWord();
   updateProgressBars();
+}
+
+function saveProgress(){
+  msg = "Chcesz zapisać obecny progres? Poprzedni zapis zostanie usunięty"
+  if (!confirm(msg)) return false;
+  wordList.createCheckpoint();
+}
+
+function loadProgress(){
+  if(wordList.loadCheckpoint());
+    setWord();
 }
