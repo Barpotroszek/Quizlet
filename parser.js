@@ -1,8 +1,13 @@
 const fs = require("fs");
 
 function toPasteInBrowser(){
-  let fishki = document.querySelectorAll('.SetPageTerm-content'), data={};
-  fishki.forEach((fiszka)=>data[fiszka.querySelector('.lang-en').textContent]=fiszka.querySelector('.lang-pl').textContent)
+  let fishki = document.querySelectorAll('.SetPageTerm-content'), data=[];
+  fishki.forEach((fiszka)=>{
+    elem = {};
+    elem.eng = fiszka.querySelector('.lang-en').textContent;
+    elem.pl=fiszka.querySelector('.lang-pl').textContent;
+    data.push(elem);
+  })
   console.log(data);
 }
 
