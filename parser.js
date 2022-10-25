@@ -1,5 +1,11 @@
 const fs = require("fs");
 
+function toPasteInBrowser(){
+  let fishki = document.querySelectorAll('.SetPageTerm-content'), data={};
+  fishki.forEach((fiszka)=>data[fiszka.querySelector('.lang-en').textContent]=fiszka.querySelector('.lang-pl').textContent)
+  console.log(data);
+}
+
 let data = "";
 
 const rs = fs.createReadStream("data.txt", { encoding: "utf-8" }),
