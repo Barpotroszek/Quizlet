@@ -1,6 +1,7 @@
 const p_word = document.getElementById("word"),
   p_input = document.getElementById("translation"),
-  result = document.getElementById("result");
+  result = document.getElementById("result")
+  CURRENT_BRANCH_NAME = "work-and-private-life";
 
 p_input.addEventListener("keypress", (ev) => {
   if (ev.key === "Enter") validateAnswer(ev.target.value);
@@ -185,7 +186,7 @@ function setWord() {
 
 const req = new XMLHttpRequest();
 if (localStorage.getItem("key") == null) {
-  req.open("GET", "output.json");
+  req.open("GET", `https://raw.githubusercontent.com/Barpotroszek/quizlet/${CURRENT_BRANCH_NAME}/output.json`);
   req.addEventListener("load", (ev) => {
     let data = JSON.parse(ev.target.response);
     console.log("Data loaded:", data);
