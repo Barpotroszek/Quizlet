@@ -8,7 +8,7 @@ function toPasteInBrowser(){
     elem.pl=fiszka.querySelector('.lang-pl').textContent;
     data.push(elem);
   })
-  console.log(data);
+  return data;
 }
 
 let data = "";
