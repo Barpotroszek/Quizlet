@@ -1,7 +1,7 @@
 const p_word = document.getElementById("word"),
   p_input = document.getElementById("translation"),
   result = document.getElementById("result")
-  CURRENT_BRANCH_NAME = "work-and-private-life";
+  CURRENT_BRANCH_NAME = "praca";
 
 p_input.addEventListener("keypress", (ev) => {
   if (ev.key === "Enter") validateAnswer(ev.target.value);
